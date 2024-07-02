@@ -1,0 +1,22 @@
+server:
+  port: 8090
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/kubsuAppDB
+    username: postgres
+    password: 5555
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+  liquibase:
+    change-log: classpath:db/changeLog/changeLog.xml
+    enabled: true
+    default-schema: public
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9098/realms/kubsu-app/protocol/openid-connect/certs

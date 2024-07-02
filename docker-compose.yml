@@ -1,0 +1,149 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15.3
+    container_name: kab-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 5555
+      POSTGRES_DB: kubsuAppDB
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - kubsu-app-net
+    restart: unless-stopped
+
+  pgadmin:
+    container_name: kab-pgadmin
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_LISTEN_PORT: 80
+    volumes:
+      - pgadmin:/var/lib/pgadmin
+    ports:
+      - "5050:80"
+    networks:
+      - kubsu-app-net
+    restart: unless-stopped
+
+  keycloak:
+    image: kubsu-app-keycloak/keycloak
+    container_name: kab-keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloakDB
+      KC_DB_USERNAME: postgres
+      KC_DB_PASSWORD: 5555
+
+      KC_LOG_LEVEL: info
+      KC_METRICS_ENABLED: true
+      KC_HEALTH_ENABLED: true
+    ports:
+      - "9098:8080"
+    volumes:
+      - ./themes/kubsuAppTheme/:/opt/keycloak/themes/kubsuAppTheme/
+    depends_on:
+      - postgres
+    networks:
+      - kubsu-app-net
+    command: start-dev
+
+  mail-dev:
+    container_name: kab-mail-dev
+    image: maildev/maildev
+    ports:
+      - 1080:1080
+      - 1025:1025
+#
+#  config-service:
+#    image: kab-config-service
+#    container_name: kab-config-service
+#    ports:
+#      - "8001:8001"
+#    networks:
+#      - kubsu-app-net
+#
+#  registry:
+#    image: kab-registry-service
+#    container_name: kab-registry-service
+#    restart: always
+#    ports:
+#      - "8761:8761"
+#    networks:
+#      - kubsu-app-net
+#    depends_on:
+#      - config-service
+#
+#  gateway:
+#    image: kab-gateway
+#    container_name: kab-gateway
+#    restart: always
+#    ports:
+#      - "22022:22022"
+#    networks:
+#      - kubsu-app-net
+#    depends_on:
+#      - config-service
+#      - registry
+#
+#  user-service:
+#    image: kab-user-service
+#    container_name: kab-user-service
+#    restart: on-failure
+#    ports:
+#      - "8090:8090"
+#    networks:
+#      - kubsu-app-net
+#    depends_on:
+#      - config-service
+#      - registry
+#      - gateway
+#
+#  accounting-service:
+#    image: kab-accounting-service
+#    container_name: kab-accounting-service
+#    restart: on-failure
+#    ports:
+#      - "8110:8110"
+#    networks:
+#      - kubsu-app-net
+#    depends_on:
+#      - config-service
+#      - registry
+#      - gateway
+#
+#  report-service:
+#    image: kab-report-service
+#    container_name: kab-report-service
+#    restart: on-failure
+#    ports:
+#      - "8120:8120"
+#    networks:
+#      - kubsu-app-net
+#    depends_on:
+#      - config-service
+#      - registry
+#      - gateway
+
+
+networks:
+  kubsu-app-net:
+    driver: bridge
+
+volumes:
+  pgdata:
+    driver: local
+    driver_opts:
+      type: none
+      device: /c/Program\ Files/PostgreSQL/15/data
+      o: bind
+  pgadmin:

@@ -1,0 +1,53 @@
+server:
+  port: 22022
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          gateway=DEBUG:
+
+keycloak:
+  token-uri: http://localhost:9098/realms/kubsu-app/protocol/openid-connect/token
+  client-id: kubsu-app-be
+  client-secret: 5MZ8921bM7NMAq5wkWAJ58IsQceTmGqM
+
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9098/realms/kubsu-app
+          jwk-set-uri: http://localhost:9098/realms/kubsu-app/protocol/openid-connect/certs
+#      client:
+#        provider:
+#          keycloak:
+#            issuer-uri: http://localhost:9098/realms/kubsu-app
+#            user-name-attribute: preferred_username
+        registration:
+          keycloak:
+            provider: keycloak
+            client-id: kubsu-app-be
+            client-secret: 5MZ8921bM7NMAq5wkWAJ58IsQceTmGqM
+            scope: openid
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: user-service
+          uri: http://localhost:8090
+          predicates:
+            - Path=/api/v1/users/**
+        - id: accounting-service
+          uri: http://localhost:8110
+          predicates:
+            - Path=/api/v1/accounting/**, /api/v1/timetables/**
+        - id: keycloak
+          uri: http://localhost:9098
+          predicates:
+            - Path=/auth/**
+          filters:
+            - RewritePath=/auth(?<segment>/?.*), /$\\{segment}

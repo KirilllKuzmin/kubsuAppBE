@@ -1,0 +1,9 @@
+FROM quay.io/keycloak/keycloak:23.0.7
+
+ARG KUBSUAPP_THEME_BASE_DIR=/opt/keycloak/themes/kubsuAppTheme
+
+ARG KUBSUAPP_THEME_LOCAL_ROOT_DIR=themes/kubsuAppTheme
+
+RUN mkdir ${KUBSUAPP_THEME_BASE_DIR}
+
+COPY ${KUBSUAPP_THEME_LOCAL_ROOT_DIR} ${KUBSUAPP_THEME_BASE_DIR}

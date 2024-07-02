@@ -1,0 +1,28 @@
+plugins {
+    id 'java'
+}
+
+group = 'com.kubsu'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+ext {
+    set('junitPlatformLauncher', '1.10.2')
+}
+
+dependencies {
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher:${junitPlatformLauncher}"
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
