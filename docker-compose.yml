@@ -63,76 +63,76 @@ services:
     ports:
       - 1080:1080
       - 1025:1025
-#
-#  config-service:
-#    image: kab-config-service
-#    container_name: kab-config-service
-#    ports:
-#      - "8001:8001"
-#    networks:
-#      - kubsu-app-net
-#
-#  registry:
-#    image: kab-registry-service
-#    container_name: kab-registry-service
-#    restart: always
-#    ports:
-#      - "8761:8761"
-#    networks:
-#      - kubsu-app-net
-#    depends_on:
-#      - config-service
-#
-#  gateway:
-#    image: kab-gateway
-#    container_name: kab-gateway
-#    restart: always
-#    ports:
-#      - "22022:22022"
-#    networks:
-#      - kubsu-app-net
-#    depends_on:
-#      - config-service
-#      - registry
-#
-#  user-service:
-#    image: kab-user-service
-#    container_name: kab-user-service
-#    restart: on-failure
-#    ports:
-#      - "8090:8090"
-#    networks:
-#      - kubsu-app-net
-#    depends_on:
-#      - config-service
-#      - registry
-#      - gateway
-#
-#  accounting-service:
-#    image: kab-accounting-service
-#    container_name: kab-accounting-service
-#    restart: on-failure
-#    ports:
-#      - "8110:8110"
-#    networks:
-#      - kubsu-app-net
-#    depends_on:
-#      - config-service
-#      - registry
-#      - gateway
-#
-#  report-service:
-#    image: kab-report-service
-#    container_name: kab-report-service
-#    restart: on-failure
-#    ports:
-#      - "8120:8120"
-#    networks:
-#      - kubsu-app-net
-#    depends_on:
-#      - config-service
-#      - registry
-#      - gateway
+
+  config-service:
+    image: kab-config-service
+    container_name: kab-config-service
+    ports:
+      - "8001:8001"
+    networks:
+      - kubsu-app-net
+
+  registry:
+    image: kab-registry-service
+    container_name: kab-registry-service
+    restart: always
+    ports:
+      - "8761:8761"
+    networks:
+      - kubsu-app-net
+    depends_on:
+      - config-service
+
+  gateway:
+    image: kab-gateway
+    container_name: kab-gateway
+    restart: always
+    ports:
+      - "22022:22022"
+    networks:
+      - kubsu-app-net
+    depends_on:
+      - config-service
+      - registry
+
+  user-service:
+    image: kab-user-service
+    container_name: kab-user-service
+    restart: on-failure
+    ports:
+      - "8090:8090"
+    networks:
+      - kubsu-app-net
+    depends_on:
+      - config-service
+      - registry
+      - gateway
+
+  accounting-service:
+    image: kab-accounting-service
+    container_name: kab-accounting-service
+    restart: on-failure
+    ports:
+      - "8110:8110"
+    networks:
+      - kubsu-app-net
+    depends_on:
+      - config-service
+      - registry
+      - gateway
+
+  report-service:
+    image: kab-report-service
+    container_name: kab-report-service
+    restart: on-failure
+    ports:
+      - "8120:8120"
+    networks:
+      - kubsu-app-net
+    depends_on:
+      - config-service
+      - registry
+      - gateway
 
 
 networks:
